@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerShell Web Terminal</title>
+    <link rel="stylesheet" href="https://unpkg.com/xterm/css/xterm.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #1e1e1e;
+        }
+        #terminal-container {
+            width: 80%;
+            height: 80%;
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal-container"></div>
+    <script src="https://unpkg.com/xterm/lib/xterm.js"></script>
+    <script>
+        const terminal = new Terminal();
+        terminal.open(document.getElementById('terminal-container'));
+        terminal.write('Welcome to the simulated PowerShell terminal!\r\n');
+        terminal.write('This is a static simulation and does not execute commands.\r\n');
+        terminal.write('\r\n> ');
+
+        terminal.onKey(e => {
+            const { key, domEvent } = e;
+            const printable = !domEvent.altKey && !domEvent.ctrlKey && !domEvent.metaKey;
+
+            if (domEvent.keyCode === 13) {
+                terminal.write('\r\n> ');
+            } else if (domEvent.keyCode === 8) {
+                // Do not delete the prompt
+                if (terminal.buffer.active.cursorX > 2) {
+                    terminal.write('\b \b');
+                }
+            } else if (printable) {
+                terminal.write(key);
+            }
+        });
+    </script>
+</body>
+</html>
